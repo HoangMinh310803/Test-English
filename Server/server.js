@@ -1,6 +1,7 @@
 const express = require("express");
 const connectDB = require("./config/db");
 const authRoutes = require("./Route/authRoutes");
+const examRoutes = require("./Route/examRoutes");
 const cors = require("cors");
 
 connectDB();
@@ -23,6 +24,7 @@ app.get("/", async (req, res) => {
 
 app.use(express.json());
 app.use("/", authRoutes);
+app.use("/", examRoutes);
 
 const PORT = process.env.PORT || 9999;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

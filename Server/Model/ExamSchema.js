@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Question = require("./QuestionSchema");
 const User = require("./UserSchema");
+const { Schema } = mongoose;
 const examSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: String,

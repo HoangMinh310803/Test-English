@@ -8,9 +8,12 @@ export const AuthProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const login = (userData) => {
-    localStorage.setItem("user", JSON.stringify(userData));
-    setUser(userData);
+  const login = (userData, token) => {
+    // localStorage.setItem("user", JSON.stringify(userData));
+    // setUser(userData);
+    const dataToSave = { ...userData, accessToken: token };
+    localStorage.setItem("user", JSON.stringify(dataToSave));
+    setUser(dataToSave);
   };
 
   const logout = () => {

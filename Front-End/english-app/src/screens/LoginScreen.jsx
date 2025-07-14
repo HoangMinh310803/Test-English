@@ -13,8 +13,12 @@ export default function LoginScreen() {
     e.preventDefault();
     try {
       const data = await loginService(email, password);
-      login(data.user);
-      navigate("/");
+      login(data.user, data.token);
+      if (data.user.role === "admin") {
+        navigate("/admin/questions");
+      } else {
+        navigate("/exams");
+      }
     } catch (err) {
       alert(err.response?.data?.message || "Lỗi đăng nhập");
     }

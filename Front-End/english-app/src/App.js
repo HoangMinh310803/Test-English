@@ -1,18 +1,12 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import { AuthProvider, useAuth } from "./contexts/authContext";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/authContext";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
-import HomeScreen from "./screens/HomeScreen";
-
-function PrivateRoute({ children }) {
-  const { user } = useAuth();
-  return user ? children : <Navigate to="/login" />;
-}
+import ExamListScreen from "./screens/ExamListScreen";
+import ExamDetailScreen from "./screens/ExamDetailScreen";
+import CreateQuestion from "./admin/CreateQuestion";
+import CreateExam from "./admin/CreateExam";
+import AdminRoute from "./components/AdminRoute";
 
 function App() {
   return (
@@ -20,15 +14,25 @@ function App() {
       <Router>
         <Routes>
           <Route
-            path="/"
+            path="/admin/questions"
             element={
-              <PrivateRoute>
-                <HomeScreen />
-              </PrivateRoute>
+              <AdminRoute>
+                <CreateQuestion />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/exams"
+            element={
+              <AdminRoute>
+                <CreateExam />
+              </AdminRoute>
             }
           />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<RegisterScreen />} />
+          <Route path="/exams/:examId" element={<ExamDetailScreen />} />
+          <Route path="/exams" element={<ExamListScreen />} />
         </Routes>
       </Router>
     </AuthProvider>

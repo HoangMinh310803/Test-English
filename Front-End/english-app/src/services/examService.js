@@ -54,3 +54,13 @@ export const submitResult = async (exam_id, score) => {
     }
   );
 };
+
+export const getHistoryResults = async () => {
+  const token = getToken();
+  const res = await axios.get(`${API_URL}/api/all-history-exams`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+};

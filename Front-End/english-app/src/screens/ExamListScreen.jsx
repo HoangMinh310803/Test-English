@@ -17,7 +17,16 @@ export default function ExamListScreen() {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>📋 Danh sách đề thi</h2>
+      <div style={styles.header}>
+        <h2 style={styles.title}>📋 Danh sách đề thi</h2>
+        <button
+          style={styles.historyButton}
+          onClick={() => navigate("/history")}
+        >
+          Xem lịch sử bài thi
+        </button>
+      </div>
+
       {exams.map((exam) => (
         <div key={exam._id} style={styles.card}>
           <h3>{exam.title}</h3>
@@ -35,6 +44,21 @@ export default function ExamListScreen() {
 }
 
 const styles = {
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+  },
+
+  historyButton: {
+    background: "#4caf50",
+    color: "white",
+    padding: "10px 16px",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+  },
   container: {
     padding: "40px",
     minHeight: "100vh",

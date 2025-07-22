@@ -6,6 +6,7 @@ import ExamListScreen from "./screens/ExamListScreen";
 import ExamDetailScreen from "./screens/ExamDetailScreen";
 import CreateQuestion from "./admin/CreateQuestion";
 import CreateExam from "./admin/CreateExam";
+import HistoryScreen from "./screens/HistoryScreen";
 import AdminRoute from "./components/AdminRoute";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path="/register" element={<RegisterScreen />} />
           <Route path="/exams/:examId" element={<ExamDetailScreen />} />
           <Route path="/exams" element={<ExamListScreen />} />
+          <Route path="/history" element={<HistoryScreen />} />
         </Routes>
       </Router>
     </AuthProvider>

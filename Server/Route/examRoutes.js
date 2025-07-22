@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   getAllExams,
   getExamWithQuestions,
+  getAllHistoryExams,
 } = require("../controllers/examController");
 const { verifyToken, isAdmin } = require("../Utils/authMiddleware");
 const {
@@ -27,5 +28,8 @@ router.get("/api/questions", verifyToken, isAdmin, getAllQuestions);
 
 // POST /api/save-result - lưu kết quả
 router.post("/api/save-result", verifyToken, saveResult);
+
+// GET /api/all-history-exams - lấy tất cả các đề thi
+router.get("/api/all-history-exams", verifyToken, getAllHistoryExams);
 
 module.exports = router;

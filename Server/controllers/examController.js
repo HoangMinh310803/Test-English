@@ -63,19 +63,25 @@ const getAllQuestions = async (req, res) => {
     res.status(500).json({ message: "Lỗi server khi lấy danh sách câu hỏi" });
   }
 };
-// const getMyResults = async (req, res) => {
-//   try {
-//     const results = await Result.find({ user_id: req.user._id })
-//       .populate("exam_id", "title")
-//       .sort({ completed_at: -1 });
+const getAllHistoryExams = async (req, res) => {
+  try {
+    const results = await Result.find({ user_id: req.user._id })
+      .populate("exam_id", "title")
+      .sort({ completed_at: -1 });
 
-//     res.json({ results });
-//   } catch (err) {
-//     res
-//       .status(500)
-//       .json({ message: "Lỗi lấy lịch sử bài thi", error: err.message });
-//   }
-// };
+    res.json({
+      results: results.map((r) => ({
+        exam_title: r.exam_id.title,
+        score: r.score,
+        completed_at: r.completed_at,
+      })),
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Lỗi lấy lịch sử bài thi", error: err.message });
+  }
+};
 
 const saveResult = async (req, res) => {
   try {
@@ -104,4 +110,5 @@ module.exports = {
   createExam,
   getAllQuestions,
   saveResult,
+  getAllHistoryExams,
 };

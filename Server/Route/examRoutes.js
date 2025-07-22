@@ -9,6 +9,7 @@ const {
   createQuestion,
   createExam,
   getAllQuestions,
+  saveResult,
 } = require("../controllers/examController");
 // GET /exams - lấy tất cả các đề thi
 router.get("/api/all-exams", getAllExams);
@@ -23,5 +24,8 @@ router.post("/api/create/exams", verifyToken, isAdmin, createExam);
 
 // GET /api/questions - lấy tất cả các cầu hỏi
 router.get("/api/questions", verifyToken, isAdmin, getAllQuestions);
+
+// POST /api/save-result - lưu kết quả
+router.post("/api/save-result", verifyToken, saveResult);
 
 module.exports = router;

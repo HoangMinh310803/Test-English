@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchExamDetail } from "../services/examService";
+import { fetchExamDetail, submitResult } from "../services/examService";
 
 export default function ExamDetailScreen() {
   const { examId } = useParams();
@@ -27,12 +27,22 @@ export default function ExamDetailScreen() {
     setAnswers({ ...answers, [qid]: opt });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let correct = 0;
     exam.questions.forEach((q) => {
       if (answers[q._id] === q.correct_answer) correct++;
     });
-    setScore(correct);
+    const finalScore = correct;
+
+    try {
+      await submitResult(exam._id, finalScore); // ✨ gọi API lưu kết quả
+      alert("✅ Bài thi đã được lưu!");
+    } catch (err) {
+      console.error("Lỗi khi lưu kết quả:", err.response?.data || err.message);
+      alert("❌ Không thể lưu kết quả bài thi.");
+    }
+
+    setScore(finalScore);
   };
 
   if (!exam) return <p style={styles.loading}>Đang tải đề...</p>;
@@ -77,7 +87,6 @@ export default function ExamDetailScreen() {
     </div>
   );
 }
-
 const styles = {
   container: {
     padding: "40px",

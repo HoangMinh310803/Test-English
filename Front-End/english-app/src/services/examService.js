@@ -41,3 +41,16 @@ export const fetchQuestions = async () => {
   });
   return res.data.questions;
 };
+
+export const submitResult = async (exam_id, score) => {
+  const token = getToken();
+  await axios.post(
+    `${API_URL}/api/save-result`,
+    { exam_id, score },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

@@ -1,6 +1,6 @@
 const Exam = require("../Model/ExamSchema");
 const Question = require("../Model/QuestionSchema");
-
+const Result = require("../Model/ResultSchema");
 const getAllExams = async (req, res) => {
   try {
     const exams = await Exam.find().select("title description");
@@ -63,10 +63,45 @@ const getAllQuestions = async (req, res) => {
     res.status(500).json({ message: "Lỗi server khi lấy danh sách câu hỏi" });
   }
 };
+// const getMyResults = async (req, res) => {
+//   try {
+//     const results = await Result.find({ user_id: req.user._id })
+//       .populate("exam_id", "title")
+//       .sort({ completed_at: -1 });
+
+//     res.json({ results });
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .json({ message: "Lỗi lấy lịch sử bài thi", error: err.message });
+//   }
+// };
+
+const saveResult = async (req, res) => {
+  try {
+    const userId = req.user.id; // từ middleware auth
+    const { exam_id, score } = req.body;
+
+    const newResult = new Result({
+      user_id: userId,
+      exam_id,
+      score,
+    });
+
+    await newResult.save();
+    res.status(201).json({ message: "Lưu kết quả thành công" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Lỗi khi lưu kết quả", error: err.message });
+  }
+};
+
 module.exports = {
   getAllExams,
   getExamWithQuestions,
   createQuestion,
   createExam,
   getAllQuestions,
+  saveResult,
 };

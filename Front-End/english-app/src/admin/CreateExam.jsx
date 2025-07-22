@@ -29,14 +29,12 @@ export default function CreateExam() {
         description,
         questions: selectedIds,
       });
-      alert("✅ Tạo đề thi thành công!");
+      alert(" Tạo đề thi thành công!");
       setTitle("");
       setDescription("");
       setSelectedIds([]);
     } catch (err) {
-      alert(
-        "❌ Lỗi tạo đề thi: " + (err.response?.data?.message || err.message)
-      );
+      alert(" Lỗi tạo đề thi: " + (err.response?.data?.message || err.message));
     }
   };
 

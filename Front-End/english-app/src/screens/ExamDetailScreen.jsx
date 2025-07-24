@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { fetchExamDetail, submitResult } from "../services/examService";
 
 export default function ExamDetailScreen() {
@@ -7,6 +7,10 @@ export default function ExamDetailScreen() {
   const [exam, setExam] = useState(null);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     const load = async () => {
@@ -28,6 +32,8 @@ export default function ExamDetailScreen() {
   };
 
   const handleSubmit = async () => {
+    if (isSubmitted) return; // Tránh nộp lại nếu đã nộp
+
     let correct = 0;
     exam.questions.forEach((q) => {
       if (answers[q._id] === q.correct_answer) correct++;
@@ -43,7 +49,35 @@ export default function ExamDetailScreen() {
     }
 
     setScore(finalScore);
+    setIsSubmitted(true);
+
+    // Dừng đếm thời gian
+    if (intervalRef.current) clearInterval(intervalRef.current);
   };
+
+  useEffect(() => {
+    if (exam) {
+      const totalSeconds = exam.duration * 60;
+      setTimeLeft(totalSeconds);
+    }
+  }, [exam]);
+
+  useEffect(() => {
+    if (timeLeft === null || timeLeft <= 0 || isSubmitted) return;
+
+    intervalRef.current = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(intervalRef.current);
+  }, [timeLeft, isSubmitted]);
+
+  useEffect(() => {
+    if (timeLeft === 0 && !isSubmitted) {
+      alert("⏰ Hết giờ! Bài thi sẽ được tự động nộp.");
+      handleSubmit();
+    }
+  }, [timeLeft, isSubmitted]);
 
   if (!exam) return <p style={styles.loading}>Đang tải đề...</p>;
 
@@ -51,6 +85,10 @@ export default function ExamDetailScreen() {
     <div style={styles.container}>
       <h2 style={styles.title}>{exam.title}</h2>
       <p style={styles.description}>{exam.description}</p>
+      <p style={{ textAlign: "center", fontWeight: "bold", color: "red" }}>
+        ⏰ Thời gian còn lại: {Math.floor(timeLeft / 60)}:
+        {(timeLeft % 60).toString().padStart(2, "0")}
+      </p>
 
       {exam.questions.map((q, idx) => (
         <div key={q._id} style={styles.questionCard}>

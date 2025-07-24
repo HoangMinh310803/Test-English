@@ -10,10 +10,22 @@ export default function CreateQuestion() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const validLetters = ["A", "B", "C", "D"];
+    if (!validLetters.includes(correctAnswer)) {
+      alert("Đáp án đúng không hợp lệ. Phải là A, B, C hoặc D.");
+      return;
+    }
+
+    const formattedOptions = options.map((text, idx) => ({
+      id: validLetters[idx],
+      text,
+    }));
+
     try {
       await createQuestion({
         question_text: questionText,
-        options,
+        options: formattedOptions,
         correct_answer: correctAnswer,
       });
 
@@ -54,14 +66,18 @@ export default function CreateQuestion() {
             style={styles.input}
           />
         ))}
-        <input
-          type="text"
-          placeholder="Đáp án đúng"
+        <select
           value={correctAnswer}
           onChange={(e) => setCorrectAnswer(e.target.value)}
           required
           style={styles.input}
-        />
+        >
+          <option value="">-- Chọn đáp án đúng --</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
+        </select>
         <button type="submit" style={styles.button}>
           Tạo câu hỏi
         </button>

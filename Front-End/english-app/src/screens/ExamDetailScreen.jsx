@@ -23,8 +23,8 @@ export default function ExamDetailScreen() {
     load();
   }, [examId]);
 
-  const handleChoose = (qid, opt) => {
-    setAnswers({ ...answers, [qid]: opt });
+  const handleChoose = (qid, optId) => {
+    setAnswers({ ...answers, [qid]: optId });
   };
 
   const handleSubmit = async () => {
@@ -35,7 +35,7 @@ export default function ExamDetailScreen() {
     const finalScore = correct;
 
     try {
-      await submitResult(exam._id, finalScore); // ✨ gọi API lưu kết quả
+      await submitResult(exam._id, finalScore);
       alert("✅ Bài thi đã được lưu!");
     } catch (err) {
       console.error("Lỗi khi lưu kết quả:", err.response?.data || err.message);
@@ -58,19 +58,43 @@ export default function ExamDetailScreen() {
             <strong>Câu {idx + 1}:</strong> {q.question_text}
           </p>
           <div style={styles.options}>
-            {q.options.map((opt) => (
-              <label key={opt} style={styles.optionLabel}>
-                <input
-                  type="radio"
-                  name={q._id}
-                  value={opt}
-                  checked={answers[q._id] === opt}
-                  onChange={() => handleChoose(q._id, opt)}
-                  style={styles.radio}
-                />
-                {opt}
-              </label>
-            ))}
+            {q.options.map((opt, i) => {
+              const isSelected = answers[q._id] === opt.id;
+              const isCorrect = opt.id === q.correct_answer;
+              const isAnswered = score !== null;
+
+              let optionStyle = { ...styles.optionLabel };
+              if (isAnswered) {
+                if (isCorrect) {
+                  optionStyle = {
+                    ...optionStyle,
+                    color: "green",
+                    fontWeight: "bold",
+                  };
+                } else if (isSelected && !isCorrect) {
+                  optionStyle = {
+                    ...optionStyle,
+                    color: "red",
+                    textDecoration: "line-through",
+                  };
+                }
+              }
+
+              return (
+                <label key={i} style={optionStyle}>
+                  <input
+                    type="radio"
+                    name={String(q._id)}
+                    value={opt.id}
+                    checked={isSelected}
+                    disabled={score !== null}
+                    onChange={() => handleChoose(q._id, opt.id)}
+                    style={styles.radio}
+                  />
+                  {opt.text}
+                </label>
+              );
+            })}
           </div>
         </div>
       ))}
@@ -87,6 +111,7 @@ export default function ExamDetailScreen() {
     </div>
   );
 }
+
 const styles = {
   container: {
     padding: "40px",

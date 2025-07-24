@@ -27,16 +27,31 @@ const getExamWithQuestions = async (req, res) => {
 const createQuestion = async (req, res) => {
   try {
     const { question_text, options, correct_answer } = req.body;
-    const question = new Question({
+
+    if (!question_text || !options || options.length !== 4) {
+      return res
+        .status(400)
+        .json({ message: "Thiếu dữ liệu hoặc không đủ 4 đáp án." });
+    }
+
+    const validLetters = ["A", "B", "C", "D"];
+    if (!validLetters.includes(correct_answer)) {
+      return res
+        .status(400)
+        .json({ message: "Đáp án đúng phải là A, B, C hoặc D" });
+    }
+
+    const newQuestion = new Question({
       question_text,
       options,
       correct_answer,
       created_by: req.user._id,
     });
-    await question.save();
-    res.status(201).json({ message: "Tạo câu hỏi thành công", question });
-  } catch (err) {
-    res.status(500).json({ message: "Lỗi tạo câu hỏi", error: err.message });
+
+    await newQuestion.save();
+    res.status(201).json({ message: "Tạo câu hỏi thành công!" });
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Lỗi server" });
   }
 };
 
@@ -57,7 +72,7 @@ const createExam = async (req, res) => {
 };
 const getAllQuestions = async (req, res) => {
   try {
-    const questions = await Question.find({ created_by: req.user._id }); // chỉ lấy câu hỏi của user hiện tại (admin)
+    const questions = await Question.find({ created_by: req.user._id });
     res.json({ questions });
   } catch (err) {
     res.status(500).json({ message: "Lỗi server khi lấy danh sách câu hỏi" });

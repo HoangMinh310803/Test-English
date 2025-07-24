@@ -57,11 +57,12 @@ const createQuestion = async (req, res) => {
 
 const createExam = async (req, res) => {
   try {
-    const { title, description, questions } = req.body;
+    const { title, description, questions, duration } = req.body;
     const exam = new Exam({
       title,
       description,
       questions: questions,
+      duration,
       created_by: req.user._id,
     });
     await exam.save();

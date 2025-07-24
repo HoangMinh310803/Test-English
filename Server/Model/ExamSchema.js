@@ -7,6 +7,11 @@ const examSchema = new mongoose.Schema({
   description: String,
   questions: [{ type: Schema.Types.ObjectId, ref: "Question" }],
   created_by: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  duration: {
+    type: Number, // đơn vị phút
+    required: true,
+    default: 15,
+  },
   created_at: { type: Date, default: Date.now },
 });
 
